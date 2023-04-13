@@ -29,7 +29,7 @@ from models import hmr, SMPL
 from datasets import BaseDataset
 from utils.imutils import uncrop
 from utils.pose_utils import reconstruction_error
-from utils.part_utils import PartRenderer
+# from utils.part_utils import PartRenderer
 
 # Define command-line arguments
 parser = argparse.ArgumentParser()
@@ -54,14 +54,14 @@ def run_evaluation(model, dataset_name, dataset, result_file,
     # Load SMPL model
     smpl_neutral = SMPL(config.SMPL_MODEL_DIR,
                         create_transl=False).to(device)
-    smpl_male = SMPL(config.SMPL_MODEL_DIR,
-                     gender='male',
-                     create_transl=False).to(device)
-    smpl_female = SMPL(config.SMPL_MODEL_DIR,
-                       gender='female',
-                       create_transl=False).to(device)
+    # smpl_male = SMPL(config.SMPL_MODEL_DIR,
+    #                  gender='male',
+    #                  create_transl=False).to(device)
+    # smpl_female = SMPL(config.SMPL_MODEL_DIR,
+    #                    gender='female',
+    #                    create_transl=False).to(device)
     
-    renderer = PartRenderer()
+    # renderer = PartRenderer()
     
     # Regressor for H36m joints
     J_regressor = torch.from_numpy(np.load(config.JOINT_REGRESSOR_H36M)).float()
@@ -179,8 +179,8 @@ def run_evaluation(model, dataset_name, dataset, result_file,
 
 
         # If mask or part evaluation, render the mask and part images
-        if eval_masks or eval_parts:
-            mask, parts = renderer(pred_vertices, pred_camera)
+        # if eval_masks or eval_parts:
+        #     mask, parts = renderer(pred_vertices, pred_camera)
 
         # Mask evaluation (for LSP)
         if eval_masks:

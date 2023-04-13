@@ -19,16 +19,17 @@ class MixedDataset(torch.utils.data.Dataset):
         Data distribution inside each batch:
         30% H36M - 60% ITW - 10% MPI-INF
         """
-        self.partition = [.3, .6*len(self.datasets[1])/length_itw,
-                          .6*len(self.datasets[2])/length_itw,
-                          .6*len(self.datasets[3])/length_itw, 
-                          .6*len(self.datasets[4])/length_itw,
-                          0.1]
+        self.partition = [0, 0*len(self.datasets[1])/length_itw,
+                          0*len(self.datasets[2])/length_itw,
+                          0*len(self.datasets[3])/length_itw, 
+                          0*len(self.datasets[4])/length_itw,
+                          1.0]
+
         self.partition = np.array(self.partition).cumsum()
 
     def __getitem__(self, index):
         p = np.random.rand()
-        for i in range(6):
+        for i in range(1,6):
             if p <= self.partition[i]:
                 return self.datasets[i][index % len(self.datasets[i])]
 

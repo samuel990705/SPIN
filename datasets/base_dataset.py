@@ -23,9 +23,26 @@ class BaseDataset(Dataset):
         self.dataset = dataset
         self.is_train = is_train
         self.options = options
-        self.img_dir = config.DATASET_FOLDERS[dataset]
+        self.img_dir = config.DATASET_FOLDERS[dataset] #'.\data\mpi_inf_3dhp'
         self.normalize_img = Normalize(mean=constants.IMG_NORM_MEAN, std=constants.IMG_NORM_STD)
         self.data = np.load(config.DATASET_FILES[is_train][dataset])
+
+        
+        if dataset=='mpi-inf-3dhp':
+            self.data=dict(self.data)#convert to dict since npz object not writeable
+            # for k in self.data:
+            #         print(self.data[k].shape)
+
+            for k in self.data:#truncate entries from S3-S8
+                self.data[k]=self.data[k][:22284]
+            
+
+            # for k in self.data:
+            #         print(self.data[k].shape)
+            # print('LAST ELEM '+self.data['imgname'][-1])
+
+
+
         self.imgname = self.data['imgname']
         
         # Get paths to gt masks, if available
@@ -182,10 +199,13 @@ class BaseDataset(Dataset):
         
         # Load image
         imgname = join(self.img_dir, self.imgname[index])
+        imgname = imgname.replace('/','\\')
+        # imgname='.\\data\\mpi_inf_3dhp\\S1\\Seq2\\imageFrames\\video_7\\frame_011755.jpg'
+
         try:
             img = cv2.imread(imgname)[:,:,::-1].copy().astype(np.float32)
         except TypeError:
-            print(imgname)
+            print('could not find'+imgname)
         orig_shape = np.array(img.shape)[:2]
 
         # Get SMPL parameters, if available
